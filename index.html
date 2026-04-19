@@ -40,48 +40,19 @@
 
 				<!-- Two -->
 					<section id="two">
-						<h2>Recent Work</h2>
-						<div class="row">
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/01.jpg" class="image fit thumb"><img src="images/thumbs/01.jpg" alt="" /></a>
-								<h3>Magna sed consequat tempus</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/02.jpg" class="image fit thumb"><img src="images/thumbs/02.jpg" alt="" /></a>
-								<h3>Ultricies lacinia interdum</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/03.jpg" class="image fit thumb"><img src="images/thumbs/03.jpg" alt="" /></a>
-								<h3>Tortor metus commodo</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/04.jpg" class="image fit thumb"><img src="images/thumbs/04.jpg" alt="" /></a>
-								<h3>Quam neque phasellus</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/05.jpg" class="image fit thumb"><img src="images/thumbs/05.jpg" alt="" /></a>
-								<h3>Nunc enim commodo aliquet</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/06.jpg" class="image fit thumb"><img src="images/thumbs/06.jpg" alt="" /></a>
-								<h3>Risus ornare lacinia</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
+						<h2>Trabajos Recientes</h2>
+						<div class="row" id="repos-container">
 						</div>
-						<ul class="actions">
-							<li><a href="#" class="button">Full Portfolio</a></li>
-						</ul>
-					</section>
+                        <ul class="actions">
+                            <li><a href="https://github.com" target="_blank" class="button">Ver GitHub Completo</a></li>
+                       </ul>
+                    </section>
+
 
 				<!-- Three -->
 					<section id="three">
-						<h2>Get In Touch</h2>
-						<p>Accumsan pellentesque commodo blandit enim arcu non at amet id arcu magna. Accumsan orci faucibus id eu lorem semper nunc nisi lorem vulputate lorem neque lorem ipsum dolor.</p>
+						<h2>Trabajemos Juntos</h2>
+						<p>Me encanta conectar con personas apasionadas y trabajar en retos creativos. Si tienes una pregunta, una propuesta de proyecto o simplemente quieres saludar, rellena el formulario y charlamos.</p>
 						<div class="row">
 							<div class="col-8 col-12-small">
 								<form method="post" action="#">
@@ -455,6 +426,33 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script>
+                const username = 'belse666'; 
+                const container = document.getElementById('repos-container');
+
+                fetch(`https://github.com{username}/repos?sort=updated&per_page=6`)
+                    .then(response => response.json())
+                    .then(repos => {
+                        container.innerHTML = ''; 
+            
+                        repos.forEach(repo => {
+               
+                            const article = document.createElement('article');
+                            article.className = 'col-6 col-12-xsmall work-item';
+                
+                            article.innerHTML = `
+                    			<a href="${repo.html_url}" target="_blank" class="image fit thumb">
+                        			<img src="https://githubassets.com{username}/${repo.name}" alt="${repo.name}" />
+                   			 	</a>
+                    			<h3>${repo.name.replace(/-/g, ' ')}</h3>
+                    			<p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
+               				`;
+                
+                			container.appendChild(article);
+            			});
+        			})
+        			.catch(error => console.error('Error cargando repositorios:', error));
+			</script>
 
 	</body>
 </html>
