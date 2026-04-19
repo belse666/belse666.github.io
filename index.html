@@ -435,8 +435,11 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			    
 			    const reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
 			
-			    fetch('https://://github.com' + username + '/repos?sort=updated&per_page=10') 
-			        .then(response => response.json())
+			    fetch('https://github.com' + username + '/repos?sort=updated&per_page=12') 
+			        .then(response => {
+			            if (!response.ok) throw new Error('Error en la red');
+			            return response.json();
+			        })
 			        .then(repos => {
 			            if (!container) return;
 			            container.innerHTML = ''; 
@@ -448,11 +451,16 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			                    const article = document.createElement('article');
 			                    article.className = 'col-6 col-12-xsmall work-item';
 			                    
-			                    const imgUrl = 'https://githubassets.com' + username + '/' + repo.name;
+			                    const localImg = 'images/thumbs/' + repo.name + '.jpg';
+			                    
+			                    const fallbackImg = 'https://githubassets.com' + username + '/' + repo.name;
 			
 			                    article.innerHTML = `
 			                        <a href="${repo.html_url}" target="_blank" class="image fit thumb">
-			                            <img src="${imgUrl}" alt="${repo.name}" style="border-radius: 8px;" />
+			                            <img src="${localImg}" 
+			                                 alt="${repo.name}" 
+			                                 style="border-radius: 8px;" 
+			                                 onerror="this.onerror=null; this.src='${fallbackImg}';" />
 			                        </a>
 			                        <h3>${repo.name.replace(/-/g, ' ')}</h3>
 			                        <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
@@ -460,7 +468,10 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			                    container.appendChild(article);
 			                });
 			        })
-			        .catch(error => console.error('Error:', error));
+			        .catch(error => {
+			            console.error('Error:', error);
+			            if(container) container.innerHTML = '<p>Error al cargar proyectos de GitHub.</p>';
+			        });
 			})();
 			</script>
 	</body>
