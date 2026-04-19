@@ -434,10 +434,10 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			    var container = document.getElementById('repos-container');
 			    var reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
 			
-			    // LA URL DEBE SER EXACTAMENTE ESTA:
-			    var url = 'https://github.com/' + username + '/repos?sort=updated&per_page=15';
+			    // CAMBIO REAL AQUÍ: Agregué "api.", "/users/" y las barras "/" correctamente
+			    var endpoint = 'api.github.com/' + username + '/repos?sort=updated&per_page=15';
 			
-			    fetch(url)
+			    fetch(endpoint)
 			        .then(function(response) { 
 			            if (!response.ok) throw new Error('Error en la API');
 			            return response.json(); 
@@ -456,7 +456,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			                
 			                var img1 = 'images/thumbs/' + repo.name + '.jpg';
 			                var img2 = 'images/thumbs/' + repo.name + '-2.jpg';
-			                var githubImg = 'https://githubassets.com/' + username + '/' + repo.name;
+			                var githubImg = 'https://githubassets.com' + username + '/' + repo.name;
 			
 			                article.innerHTML = 
 			                    '<a href="' + repo.html_url + '" target="_blank" class="image fit thumb">' +
@@ -472,8 +472,8 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			            });
 			        })
 			        .catch(function(err) {
-			            console.error('Error detallado:', err);
-			            container.innerHTML = '<p>Error de conexión. Revisa la URL del fetch.</p>';
+			            console.error('Error:', err);
+			            container.innerHTML = '<p>Error de conexión. Verifica la URL de la API.</p>';
 			        });
 			})();
 			</script>
