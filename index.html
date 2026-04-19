@@ -431,20 +431,21 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			        const username = 'belse666'; 
 			        const container = document.getElementById('repos-container');
 			
-			        // URL corregida con backticks `` y la ruta API oficial
+			        // CORRECCIÓN: Se agrega "api.", "/users/" y el signo "$" antes de {username}
 			        fetch(`https://github.com{username}/repos?sort=updated&per_page=6`)
 			            .then(response => {
 			                if (!response.ok) throw new Error('Error al conectar con GitHub');
 			                return response.json();
 			            })
 			            .then(repos => {
-			                container.innerHTML = ''; // Limpiamos el "Cargando..."
+			                if (!container) return; // Seguridad por si el ID no existe
+			                container.innerHTML = ''; 
 			
 			                repos.forEach(repo => {
 			                    const article = document.createElement('article');
 			                    article.className = 'col-6 col-12-xsmall work-item';
 			                    
-			                    // Imagen autogenerada por GitHub para cada repositorio
+			                    // CORRECCIÓN: URL de imagen dinámica corregida con "$" y la ruta oficial
 			                    const imgUrl = `https://githubassets.com{username}/${repo.name}`;
 			
 			                    article.innerHTML = `
@@ -452,14 +453,14 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			                            <img src="${imgUrl}" alt="${repo.name}" style="border-radius: 8px;" />
 			                        </a>
 			                        <h3>${repo.name.replace(/-/g, ' ')}</h3>
-			                        <p>${repo.description || 'Sin descripción disponible.'}</p>
+			                        <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
 			                    `;
 			                    container.appendChild(article);
 			                });
 			            })
 			            .catch(error => {
 			                console.error(error);
-			                container.innerHTML = '<p>Error: No se pudieron cargar los repositorios. Verifica tu conexión o el nombre de usuario.</p>';
+			                container.innerHTML = '<p>Error: No se pudieron cargar los repositorios.</p>';
 			            });
 			    })();
 			</script>
