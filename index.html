@@ -430,38 +430,33 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			    const username = 'belse666'; 
 			    const container = document.getElementById('repos-container');
 			
-			    // CORRECCIÓN: La URL de la API debe ser ://github.com
-			    fetch(`https://://github.com${username}/repos?sort=updated&per_page=6`)
-			        .then(response => {
-			            if (!response.ok) throw new Error('Error en la API');
-			            return response.json();
-			        })
+			    fetch(`https://github.com{username}/repos?sort=updated&per_page=6`)
+			        .then(response => response.json())
 			        .then(repos => {
-			            container.innerHTML = ''; 
+			            if (repos.length > 0) {
+			                container.innerHTML = ''; 
+			                repos.forEach(repo => {
+			                    const article = document.createElement('article');
+			                    article.className = 'col-6 col-12-xsmall work-item';
+			                    
+			                    // Imagen dinámica que genera GitHub para cada repo
+			                    const imgUrl = `https://githubassets.com{username}/${repo.name}`;
 			
-			            repos.forEach(repo => {
-			                const article = document.createElement('article');
-			                article.className = 'col-6 col-12-xsmall work-item';
-			    
-			                // CORRECCIÓN: URL de imagen dinámica para que se vea la tarjeta del repo
-			                const imgUrl = `https://githubassets.com{username}/${repo.name}`;
-			
-			                article.innerHTML = `
-			                    <a href="${repo.html_url}" target="_blank" class="image fit thumb">
-			                        <img src="${imgUrl}" alt="${repo.name}" />
-			                    </a>
-			                    <h3>${repo.name.replace(/-/g, ' ')}</h3>
-			                    <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
-			                `;
-			    
-			                container.appendChild(article);
-			            });
+			                    article.innerHTML = `
+			                        <a href="${repo.html_url}" target="_blank" class="image fit thumb">
+			                            <img src="${imgUrl}" alt="${repo.name}" />
+			                        </a>
+			                        <h3>${repo.name.replace(/-/g, ' ')}</h3>
+			                        <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
+			                    `;
+			                    container.appendChild(article);
+			                });
+			            }
 			        })
 			        .catch(error => {
-			            console.error('Error cargando repositorios:', error);
-			            container.innerHTML = '<p>Error al cargar los proyectos. Por favor, visita mi perfil de GitHub.</p>';
+			            console.error('Error:', error);
+			            container.innerHTML = '<p>No se pudieron cargar los repositorios en este momento.</p>';
 			        });
 			</script>
-
 	</body>
 </html>
