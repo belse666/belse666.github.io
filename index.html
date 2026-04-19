@@ -429,50 +429,50 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script>
-			(function() {
-			    const username = 'belse666'; 
-			    const container = document.getElementById('repos-container');
-			    
-			    const reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
+			    (function() {
+			        const username = 'belse666'; 
+			        const container = document.getElementById('repos-container');
+			        const reposAExcluir = ['streamlit_test', 'belse666.github.io'];
 			
-			    fetch('https://github.com' + username + '/repos?sort=updated&per_page=12') 
-			        .then(response => {
-			            if (!response.ok) throw new Error('Error en la red');
-			            return response.json();
-			        })
-			        .then(repos => {
-			            if (!container) return;
-			            container.innerHTML = ''; 
-			
-			            repos
-			                .filter(repo => !reposAExcluir.includes(repo.name))
-			                .slice(0, 6) 
-			                .forEach(repo => {
-			                    const article = document.createElement('article');
-			                    article.className = 'col-6 col-12-xsmall work-item';
+			        fetch('https://github.com' + username + '/repos?sort=updated&per_page=12')
+			            .then(response => response.json())
+			            .then(repos => {
+			                if (repos && container) {
+			                    container.innerHTML = ''; 
 			                    
-			                    const localImg = 'images/thumbs/' + repo.name + '.jpg';
-			                    
-			                    const fallbackImg = 'https://githubassets.com' + username + '/' + repo.name;
+			                    repos
+			                    .filter(repo => !reposAExcluir.includes(repo.name))
+			                    .slice(0, 6)
+			                    .forEach(repo => {
+			                        const article = document.createElement('article');
+			                        article.className = 'col-6 col-12-xsmall work-item';
+			                        
+			                        // Definimos las dos rutas de tus imágenes locales
+			                        const img1 = 'images/thumbs/' + repo.name + '.jpg';
+			                        const img2 = 'images/thumbs/' + repo.name + '-2.jpg';
+			                        
+			                        // Respaldo de GitHub por si no hay imagen local
+			                        const fallback = 'https://githubassets.com' + username + '/' + repo.name;
 			
-			                    article.innerHTML = `
-			                        <a href="${repo.html_url}" target="_blank" class="image fit thumb">
-			                            <img src="${localImg}" 
-			                                 alt="${repo.name}" 
-			                                 style="border-radius: 8px;" 
-			                                 onerror="this.onerror=null; this.src='${fallbackImg}';" />
-			                        </a>
-			                        <h3>${repo.name.replace(/-/g, ' ')}</h3>
-			                        <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
-			                    `;
-			                    container.appendChild(article);
-			                });
-			        })
-			        .catch(error => {
-			            console.error('Error:', error);
-			            if(container) container.innerHTML = '<p>Error al cargar proyectos de GitHub.</p>';
-			        });
-			})();
+			                        article.innerHTML = `
+			                            <a href="${repo.html_url}" target="_blank" class="image fit thumb">
+			                                <img src="${img1}" 
+			                                     alt="${repo.name}" 
+			                                     onmouseover="this.src='${img2}'" 
+			                                     onmouseout="this.src='${img1}'"
+			                                     onerror="this.onerror=null; this.src='${fallback}';" />
+			                            </a>
+			                            <h3>${repo.name.replace(/-/g, ' ')}</h3>
+			                            <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
+			                        `;
+			                        container.appendChild(article);
+			                    });
+			                }
+			            })
+			            .catch(error => {
+			                console.error('Error:', error);
+			            });
+			    })();
 			</script>
 	</body>
 </html>
