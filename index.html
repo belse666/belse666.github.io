@@ -40,13 +40,15 @@
 
 				<!-- Two -->
 					<section id="two">
-						<h2>Trabajos Recientes</h2>
-						<div class="row" id="repos-container">
-						</div>
-                        <ul class="actions">
-                            <li><a href="https://github.com" target="_blank" class="button">Ver GitHub Completo</a></li>
-                       </ul>
-                    </section>
+					    <h2>Trabajos Recientes</h2>
+					    <div class="row" id="repos-container">
+					        <!-- Si ves este mensaje, el script aún no ha corrido -->
+					        <p>Cargando tus proyectos desde GitHub...</p>
+					    </div>
+					    <ul class="actions" style="margin-top: 20px;">
+					        <li><a href="https://github.com" target="_blank" class="button">Ver GitHub Completo</a></li>
+					    </ul>
+					</section>
 
 
 				<!-- Three -->
@@ -427,42 +429,40 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script>
-			    (function() {
-			        const username = 'belse666'; 
-			        const container = document.getElementById('repos-container');
+			(function() {
+			    const username = 'belse666'; 
+			    const container = document.getElementById('repos-container');
 			
-			        // CORRECCIÓN: Se agrega "api.", "/users/" y el signo "$" antes de {username}
-			        fetch(`https://github.com{username}/repos?sort=updated&per_page=6`)
-			            .then(response => {
-			                if (!response.ok) throw new Error('Error al conectar con GitHub');
-			                return response.json();
-			            })
-			            .then(repos => {
-			                if (!container) return; // Seguridad por si el ID no existe
-			                container.innerHTML = ''; 
+			    fetch('https://api.github.com/users/' + username + '/repos?sort=updated&per_page=6')
+			        .then(response => {
+			            if (!response.ok) throw new Error('No se pudo conectar con GitHub');
+			            return response.json();
+			        })
+			        .then(repos => {
+			            if (!container) return;
+			            container.innerHTML = ''; 
 			
-			                repos.forEach(repo => {
-			                    const article = document.createElement('article');
-			                    article.className = 'col-6 col-12-xsmall work-item';
-			                    
-			                    // CORRECCIÓN: URL de imagen dinámica corregida con "$" y la ruta oficial
-			                    const imgUrl = `https://githubassets.com{username}/${repo.name}`;
+			            repos.forEach(repo => {
+			                const article = document.createElement('article');
+			                article.className = 'col-6 col-12-xsmall work-item';
+			                
+			                const imgUrl = 'https://githubassets.com' + username + '/' + repo.name;
 			
-			                    article.innerHTML = `
-			                        <a href="${repo.html_url}" target="_blank" class="image fit thumb">
-			                            <img src="${imgUrl}" alt="${repo.name}" style="border-radius: 8px;" />
-			                        </a>
-			                        <h3>${repo.name.replace(/-/g, ' ')}</h3>
-			                        <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
-			                    `;
-			                    container.appendChild(article);
-			                });
-			            })
-			            .catch(error => {
-			                console.error(error);
-			                container.innerHTML = '<p>Error: No se pudieron cargar los repositorios.</p>';
+			                article.innerHTML = `
+			                    <a href="${repo.html_url}" target="_blank" class="image fit thumb">
+			                        <img src="${imgUrl}" alt="${repo.name}" style="border-radius: 8px; width: 100%; display: block;" />
+			                    </a>
+			                    <h3 style="margin-top: 10px;">${repo.name.replace(/-/g, ' ')}</h3>
+			                    <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
+			                `;
+			                container.appendChild(article);
 			            });
-			    })();
+			        })
+			        .catch(error => {
+			            console.error('Error:', error);
+			            container.innerHTML = '<p>Error: No se pudieron cargar los proyectos. Revisa que el ID "repos-container" esté bien escrito en tu HTML.</p>';
+			        });
+			})();
 			</script>
 	</body>
 </html>
