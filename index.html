@@ -432,14 +432,16 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			(function() {
 			    var username = 'belse666'; 
 			    var container = document.getElementById('repos-container');
-			    // Pon aquí los nombres exactos de los repos que NO quieres
 			    var reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
-			
+
 			    fetch('https://github.com' + username + '/repos?sort=updated&per_page=15')
-			        .then(function(response) { return response.json(); })
+			        .then(function(response) { 
+			            if (!response.ok) throw new Error('Error en la API de GitHub');
+			            return response.json(); 
+			        })
 			        .then(function(repos) {
 			            if (!container) return;
-			            container.innerHTML = ''; // Esto quita el mensaje de "Cargando..."
+			            container.innerHTML = ''; 
 			
 			            var filtrados = repos.filter(function(repo) {
 			                return reposAExcluir.indexOf(repo.name) === -1;
@@ -449,7 +451,6 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			                var article = document.createElement('article');
 			                article.className = 'col-6 col-12-xsmall work-item';
 			                
-			                // Imagen 1 y Imagen 2 (deben estar en images/thumbs/)
 			                var img1 = 'images/thumbs/' + repo.name + '.jpg';
 			                var img2 = 'images/thumbs/' + repo.name + '-2.jpg';
 			                var githubImg = 'https://githubassets.com' + username + '/' + repo.name;
@@ -468,8 +469,8 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			            });
 			        })
 			        .catch(function(err) {
-			            console.error(err);
-			            container.innerHTML = '<p>Error al cargar. Revisa la consola (F12).</p>';
+			            console.error('Error detectado:', err);
+			            container.innerHTML = '<p>Error de conexión con GitHub. Por favor, intenta de nuevo más tarde.</p>';
 			        });
 			})();
 			</script>
