@@ -433,10 +433,13 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			    var username = 'belse666'; 
 			    var container = document.getElementById('repos-container');
 			    var reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
-
-			    fetch('https://github.com' + username + '/repos?sort=updated&per_page=15')
+			
+			    // LA URL DEBE SER EXACTAMENTE ESTA:
+			    var url = 'https://github.com/' + username + '/repos?sort=updated&per_page=15';
+			
+			    fetch(url)
 			        .then(function(response) { 
-			            if (!response.ok) throw new Error('Error en la API de GitHub');
+			            if (!response.ok) throw new Error('Error en la API');
 			            return response.json(); 
 			        })
 			        .then(function(repos) {
@@ -453,7 +456,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			                
 			                var img1 = 'images/thumbs/' + repo.name + '.jpg';
 			                var img2 = 'images/thumbs/' + repo.name + '-2.jpg';
-			                var githubImg = 'https://githubassets.com' + username + '/' + repo.name;
+			                var githubImg = 'https://githubassets.com/' + username + '/' + repo.name;
 			
 			                article.innerHTML = 
 			                    '<a href="' + repo.html_url + '" target="_blank" class="image fit thumb">' +
@@ -469,8 +472,8 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			            });
 			        })
 			        .catch(function(err) {
-			            console.error('Error detectado:', err);
-			            container.innerHTML = '<p>Error de conexión con GitHub. Por favor, intenta de nuevo más tarde.</p>';
+			            console.error('Error detallado:', err);
+			            container.innerHTML = '<p>Error de conexión. Revisa la URL del fetch.</p>';
 			        });
 			})();
 			</script>
