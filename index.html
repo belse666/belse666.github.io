@@ -429,50 +429,49 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script>
-			    (function() {
-			        const username = 'belse666'; 
-			        const container = document.getElementById('repos-container');
-			        const reposAExcluir = ['streamlit_test', 'belse666.github.io'];
+			(function() {
+			    var username = 'belse666'; 
+			    var container = document.getElementById('repos-container');
+			    // Pon aquí los nombres exactos de los repos que NO quieres
+			    var reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
 			
-			        fetch('https://github.com' + username + '/repos?sort=updated&per_page=12')
-			            .then(response => response.json())
-			            .then(repos => {
-			                if (repos && container) {
-			                    container.innerHTML = ''; 
-			                    
-			                    repos
-			                    .filter(repo => !reposAExcluir.includes(repo.name))
-			                    .slice(0, 6)
-			                    .forEach(repo => {
-			                        const article = document.createElement('article');
-			                        article.className = 'col-6 col-12-xsmall work-item';
-			                        
-			                        // Definimos las dos rutas de tus imágenes locales
-			                        const img1 = 'images/thumbs/' + repo.name + '.jpg';
-			                        const img2 = 'images/thumbs/' + repo.name + '-2.jpg';
-			                        
-			                        // Respaldo de GitHub por si no hay imagen local
-			                        const fallback = 'https://githubassets.com' + username + '/' + repo.name;
+			    fetch('https://github.com' + username + '/repos?sort=updated&per_page=15')
+			        .then(function(response) { return response.json(); })
+			        .then(function(repos) {
+			            if (!container) return;
+			            container.innerHTML = ''; // Esto quita el mensaje de "Cargando..."
 			
-			                        article.innerHTML = `
-			                            <a href="${repo.html_url}" target="_blank" class="image fit thumb">
-			                                <img src="${img1}" 
-			                                     alt="${repo.name}" 
-			                                     onmouseover="this.src='${img2}'" 
-			                                     onmouseout="this.src='${img1}'"
-			                                     onerror="this.onerror=null; this.src='${fallback}';" />
-			                            </a>
-			                            <h3>${repo.name.replace(/-/g, ' ')}</h3>
-			                            <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
-			                        `;
-			                        container.appendChild(article);
-			                    });
-			                }
-			            })
-			            .catch(error => {
-			                console.error('Error:', error);
+			            var filtrados = repos.filter(function(repo) {
+			                return reposAExcluir.indexOf(repo.name) === -1;
+			            }).slice(0, 6);
+			
+			            filtrados.forEach(function(repo) {
+			                var article = document.createElement('article');
+			                article.className = 'col-6 col-12-xsmall work-item';
+			                
+			                // Imagen 1 y Imagen 2 (deben estar en images/thumbs/)
+			                var img1 = 'images/thumbs/' + repo.name + '.jpg';
+			                var img2 = 'images/thumbs/' + repo.name + '-2.jpg';
+			                var githubImg = 'https://githubassets.com' + username + '/' + repo.name;
+			
+			                article.innerHTML = 
+			                    '<a href="' + repo.html_url + '" target="_blank" class="image fit thumb">' +
+			                        '<img src="' + img1 + '" ' +
+			                             'onmouseover="this.src=\'' + img2 + '\'" ' +
+			                             'onmouseout="this.src=\'' + img1 + '\'" ' +
+			                             'onerror="this.onerror=null; this.src=\'' + githubImg + '\';" />' +
+			                    '</a>' +
+			                    '<h3>' + repo.name.replace(/-/g, ' ') + '</h3>' +
+			                    '<p>' + (repo.description || 'Proyecto en GitHub') + '</p>';
+			                
+			                container.appendChild(article);
 			            });
-			    })();
+			        })
+			        .catch(function(err) {
+			            console.error(err);
+			            container.innerHTML = '<p>Error al cargar. Revisa la consola (F12).</p>';
+			        });
+			})();
 			</script>
 	</body>
 </html>
