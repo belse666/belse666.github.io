@@ -432,36 +432,35 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			(function() {
 			    const username = 'belse666'; 
 			    const container = document.getElementById('repos-container');
+			    
+			    const reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
 			
-			    fetch('https://api.github.com/users/' + username + '/repos?sort=updated&per_page=6')
-			        .then(response => {
-			            if (!response.ok) throw new Error('No se pudo conectar con GitHub');
-			            return response.json();
-			        })
+			    fetch('https://://github.com' + username + '/repos?sort=updated&per_page=10') 
+			        .then(response => response.json())
 			        .then(repos => {
 			            if (!container) return;
 			            container.innerHTML = ''; 
 			
-			            repos.forEach(repo => {
-			                const article = document.createElement('article');
-			                article.className = 'col-6 col-12-xsmall work-item';
-			                
-			                const imgUrl = 'https://githubassets.com' + username + '/' + repo.name;
+			            repos
+			                .filter(repo => !reposAExcluir.includes(repo.name))
+			                .slice(0, 6) 
+			                .forEach(repo => {
+			                    const article = document.createElement('article');
+			                    article.className = 'col-6 col-12-xsmall work-item';
+			                    
+			                    const imgUrl = 'https://githubassets.com' + username + '/' + repo.name;
 			
-			                article.innerHTML = `
-			                    <a href="${repo.html_url}" target="_blank" class="image fit thumb">
-			                        <img src="${imgUrl}" alt="${repo.name}" style="border-radius: 8px; width: 100%; display: block;" />
-			                    </a>
-			                    <h3 style="margin-top: 10px;">${repo.name.replace(/-/g, ' ')}</h3>
-			                    <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
-			                `;
-			                container.appendChild(article);
-			            });
+			                    article.innerHTML = `
+			                        <a href="${repo.html_url}" target="_blank" class="image fit thumb">
+			                            <img src="${imgUrl}" alt="${repo.name}" style="border-radius: 8px;" />
+			                        </a>
+			                        <h3>${repo.name.replace(/-/g, ' ')}</h3>
+			                        <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
+			                    `;
+			                    container.appendChild(article);
+			                });
 			        })
-			        .catch(error => {
-			            console.error('Error:', error);
-			            container.innerHTML = '<p>Error: No se pudieron cargar los proyectos. Revisa que el ID "repos-container" esté bien escrito en tu HTML.</p>';
-			        });
+			        .catch(error => console.error('Error:', error));
 			})();
 			</script>
 	</body>
