@@ -429,56 +429,56 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script>
+			<script>
 			(function() {
 			    const username = 'belse666'; 
 			    const container = document.getElementById('repos-container');
-			    
-			    // 1. Aquí pones los nombres exactos de los repos que NO quieres mostrar
 			    const reposAExcluir = ['streamlit_test', 'belse666.github.io']; 
 			
 			    fetch('https://api.github.com/users/' + username + '/repos?sort=updated&per_page=12')
-			        .then(response => {
-			            if (!response.ok) throw new Error('No se pudo conectar con GitHub');
-			            return response.json();
-			        })
+			        .then(response => response.json())
 			        .then(repos => {
 			            if (!container) return;
 			            container.innerHTML = ''; 
 			
 			            repos
-			                // 2. Filtramos los repositorios excluidos
 			                .filter(repo => !reposAExcluir.includes(repo.name))
 			                .slice(0, 6) 
 			                .forEach(repo => {
 			                    const article = document.createElement('article');
 			                    article.className = 'col-6 col-12-xsmall work-item';
 			                    
-			                    // 3. Rutas de tus imágenes locales (en la carpeta thumbs)
 			                    const img1 = 'images/thumbs/' + repo.name + '.jpg';
 			                    const img2 = 'images/thumbs/' + repo.name + '-2.jpg';
-			                    
-			                    // Imagen de respaldo de GitHub por si falla la local
 			                    const fallback = 'https://githubassets.com' + username + '/' + repo.name;
 			
 			                    article.innerHTML = `
 			                        <a href="${repo.html_url}" target="_blank" class="image fit thumb">
 			                            <img src="${img1}" 
 			                                 alt="${repo.name}" 
-			                                 onmouseover="this.src='${img2}'" 
-			                                 onmouseout="this.src='${img1}'"
-			                                 onerror="this.onerror=null; this.src='${fallback}';" 
-			                                 style="border-radius: 8px; width: 100%; display: block;" />
+			                                 id="img-${repo.id}"
+			                                 style="border-radius: 8px; transition: all 0.3s;" />
 			                        </a>
 			                        <h3 style="margin-top: 10px;">${repo.name.replace(/-/g, ' ')}</h3>
 			                        <p>${repo.description || 'Proyecto desarrollado en GitHub.'}</p>
 			                    `;
+			                    
 			                    container.appendChild(article);
+			
+			                    // CONTROL DEL MOUSE (Mejorado)
+			                    const imagenElemento = document.getElementById(`img-${repo.id}`);
+			                    
+			                    imagenElemento.onmouseover = () => { imagenElemento.src = img2; };
+			                    imagenElemento.onmouseout = () => { imagenElemento.src = img1; };
+			                    
+			                    // Si la imagen 1 falla, carga GitHub
+			                    imagenElemento.onerror = () => { 
+			                        imagenElemento.src = fallback;
+			                        imagenElemento.onmouseover = null; // Quita el efecto si no hay fotos
+			                    };
 			                });
 			        })
-			        .catch(error => {
-			            console.error('Error:', error);
-			            if(container) container.innerHTML = '<p>Error al cargar los proyectos.</p>';
-			        });
+			        .catch(error => console.error('Error:', error));
 			})();
 			</script>
 	</body>
